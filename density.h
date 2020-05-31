@@ -87,13 +87,13 @@ struct Counter {
         cudaMalloc(&bigCounts, sizeof(uint64_t) * nx * nx);
         cpuCounts = new uint64_t[nx * nx];
         counts = new double[nx * nx];
+        memset(counts, 0, sizeof(double) * nx * nx);
         nPoints = 0;
     }
 
     void init(uint32_t nPoints) {
         cudaMemset(tmpCounts, 0, sizeof(uint32_t) * nx * nx);
         cudaMemset(bigCounts, 0, sizeof(uint64_t) * nx * nx);
-        memset(counts, 0, sizeof(double) * nx * nx);
 
         if (this->nPoints) {
             cudaFree(points);

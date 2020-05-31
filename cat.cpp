@@ -22,13 +22,13 @@ int main() {
 
     uint32_t nIters;
     assert(fread(&nIters, sizeof(uint32_t), 1, stdin) == 1);
-    for (uint32_t iIter = 0; iIter < nIters; iIter) {
+    for (uint32_t iIter = 0; iIter < nIters; iIter+=4) {
         counter.init(80000);
-        counter.run(cat, 0, 256, false);
+        counter.run(cat, 1, 256, false);
         if (iIter % 128 == 0) {
             fprintf(stderr, "%u/%u iterations\n", iIter, nIters);
         }
-        counter.run(cat, 1, 1024, true);
+        counter.run(cat, std::min(4u, nIters - iIter), 1024, true);
     }
 
     fwrite(counter.counts, sizeof(double), nx * nx, stdout);
