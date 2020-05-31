@@ -7,8 +7,13 @@ void pIncrement(
         float dx, float dy, uint32_t nx, uint32_t ny,
         float xy[2]
 ) {
-    uint32_t i = uint32_t(xy[0] / dx);
-    uint32_t j = uint32_t(xy[1] / dy);
+    const float sina = 0.85065081, cosa = 0.52573111;
+    float rotx = (xy[0] * sina + xy[1] * cosa - 0.5 * (sina + cosa)) + 0.5;
+    float roty = (xy[0] * cosa - xy[1] * sina - 0.5 * (cosa - sina)) + 0.5;
+    if (rotx < 0 or roty < 0)
+        return;
+    uint32_t i = uint32_t(rotx / dx);
+    uint32_t j = uint32_t(roty / dy);
     
     if (i < nx and j < ny) {
         uint32_t ind = i * ny + j;

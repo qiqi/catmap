@@ -1,5 +1,6 @@
 #include<cstdio>
 #include<cassert>
+#include<algorithm>
 
 #include"catmap.h"
 #include"density.h"
@@ -23,8 +24,10 @@ int main() {
 
     uint32_t nIters;
     assert(fread(&nIters, sizeof(uint32_t), 1, stdin) == 1);
-    fprintf(stderr, "Running %u iterations\n", nIters);
-    counter.run(cat, nIters, 1024, true);
+    for (uint32_t iIter = 0; iIter < nIters; iIter += 16) {
+        fprintf(stderr, "%u/%u iterations\n", iIter, nIters);
+        counter.run(cat, std::min(16u, nIters - iIter), 1024, true);
+    }
 
     fwrite(counter.counts, sizeof(double), nx * nx, stdout);
     return 0;
