@@ -5,6 +5,7 @@ import subprocess
 
 from pylab import *
 from numpy import *
+from mpi4py import MPI
 
 catBin = sys.argv[1]
 
@@ -19,14 +20,18 @@ for i in range(6):
 
 n = 2048
 out = [frombuffer(p.stdout.read(n * n * 8), double) for p in procs]
-density = sum(out, 0).reshape([n, n])
-print(density)
-print(density.sum())
-print(density.max())
-save('density.npy', density)
-figure(figsize=(32,32))
-imshow(density)
-axis('scaled')
-axis('off')
-grid()
-savefig('2000.png')
+d = sum(out, 0).reshape([n, n])
+
+comm = MPI.COMM_WORLD
+density = zeros_like(d)
+comm.Reduce(d, density)
+if comm.rank == 0:
+    print(density.sum())
+    print(density.max())
+    save('density.npy', density)
+    figure(figsize=(32,32))
+    imshow(density)
+    axis('scaled')
+    axis('off')
+    grid()
+    savefig('2000.png')

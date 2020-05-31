@@ -4,12 +4,12 @@
 __device__ __forceinline__
 void pIncrement(
         uint32_t * tmpCounts,
-        float dx, float dy, uint32_t nx, uint32_t ny,
-        float xy[2]
+        double dx, double dy, uint32_t nx, uint32_t ny,
+        double xy[2]
 ) {
-    const float sina = 0.85065081, cosa = 0.52573111;
-    float rotx = (xy[0] * sina + xy[1] * cosa - 0.5 * (sina + cosa)) + 0.5;
-    float roty = (xy[0] * cosa - xy[1] * sina - 0.5 * (cosa - sina)) + 0.5;
+    const double sina = 0.85065081, cosa = 0.52573111;
+    double rotx = (xy[0] * sina + xy[1] * cosa - 0.5 * (sina + cosa)) + 0.5;
+    double roty = (xy[0] * cosa - xy[1] * sina - 0.5 * (cosa - sina)) + 0.5;
     if (rotx < 0 or roty < 0)
         return;
     uint32_t i = uint32_t(rotx / dx);
@@ -25,14 +25,14 @@ template<bool accumulate, class Map>
 __global__
 void pRun(
         Map map, uint32_t nIters,
-        uint32_t nPoints, float (*points)[2],
+        uint32_t nPoints, double (*points)[2],
         uint32_t * tmpCounts,
-        float dx, float dy, uint32_t nx, uint32_t ny
+        double dx, double dy, uint32_t nx, uint32_t ny
 ) {
     uint32_t ind = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (ind < nPoints) {
-        float ptx[2] = {points[ind][0], points[ind][1]};
+        double ptx[2] = {points[ind][0], points[ind][1]};
         for (uint32_t iIter = 0; iIter < nIters; ++iIter) {
             map.map(ptx);
             if (accumulate) {
@@ -60,7 +60,7 @@ void pAddToBigCounterAndClear(
 struct Counter {
   public:
     const uint32_t nx, ny;
-    const float dx, dy;
+    const double dx, dy;
     double* counts;
 
   private:
@@ -68,7 +68,7 @@ struct Counter {
     uint64_t* bigCounts;
     uint64_t* cpuCounts;
 
-    float (*points)[2];
+    double (*points)[2];
     uint32_t nPoints;
 
     void pAddToCpuCounterAndClear() {
@@ -81,7 +81,7 @@ struct Counter {
     }
 
   public:
-    Counter(uint32_t nx, uint32_t ny, float dx, float dy)
+    Counter(uint32_t nx, uint32_t ny, double dx, double dy)
         : nx(nx), ny(ny), dx(dx), dy(dy) {
         cudaMalloc(&tmpCounts, sizeof(uint32_t) * nx * nx);
         cudaMalloc(&bigCounts, sizeof(uint64_t) * nx * nx);
@@ -99,14 +99,13 @@ struct Counter {
             cudaFree(points);
         }
         this->nPoints = nPoints;
-        cudaMalloc(&points, sizeof(float) * nPoints * 2);
+        cudaMalloc(&points, sizeof(double) * nPoints * 2);
 
-        float *cpuPoints = new float[nPoints*2];
+        double *cpuPoints = new double[nPoints*2];
         for (uint32_t i = 0; i < nPoints * 2; ++i) {
-            cpuPoints[i] = rand() / float(RAND_MAX);
-            // cpuPoints[i] = 0.5;
+            cpuPoints[i] = (rand() / double(RAND_MAX) + rand()) / double(RAND_MAX);
         }
-        cudaMemcpy(points, cpuPoints, sizeof(float) * nPoints * 2,
+        cudaMemcpy(points, cpuPoints, sizeof(double) * nPoints * 2,
                    cudaMemcpyHostToDevice);
         delete[] cpuPoints;
     }
