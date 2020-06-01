@@ -7,7 +7,8 @@ void pIncrement(
         double dx, double dy, uint32_t nx, uint32_t ny,
         double xy[2]
 ) {
-    const double sina = 0.85065081, cosa = 0.52573111;
+    // const double sina = 0.85065081, cosa = 0.52573111;
+    const double sina = 0., cosa = 1.;
     double rotx = (xy[0] * sina + xy[1] * cosa - 0.5 * (sina + cosa)) + 0.5;
     double roty = (xy[0] * cosa - xy[1] * sina - 0.5 * (cosa - sina)) + 0.5;
     if (rotx < 0 or roty < 0)

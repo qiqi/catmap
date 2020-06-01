@@ -11,6 +11,10 @@ int main() {
     cudaSetDevice(iDevice);
     fprintf(stderr, "Set To Device %u\n", iDevice);
 
+    uint32_t randSeed;
+    assert(fread(&randSeed, sizeof(uint32_t), 1, stdin) == 1);
+    srand(randSeed);
+
     const int nx = 2048;
     Counter counter(nx, nx, 1./nx, 1./nx);
 
