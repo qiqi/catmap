@@ -6,19 +6,18 @@ struct BakersMap {
 
     __device__ __forceinline__
     void map(double x[2]) {
-        const double scale = 2 * M_PI;
-        double y[2] = {fmodf(2 * x[0], 1), (x[1] + floor(2 * x[0])) / 2.};
+        double y[2] = {2 * x[0], (x[1] + floor(x[0] / M_PI) * 2 * M_PI) / 2.};
     
-        double d0 = sin(2 * M_PI * x[0]) / scale;
-        double d1 = sin(2 * M_PI * x[1]) / scale;
+        double d0 = sin(2 * x[0]) / 2.0;
+        double d1 = sin(x[1]);
     
         y[1] += s0 * d1;
-        y[0] += s1 * d1;
-        y[1] -= s2 * d0;
+        y[0] += s1 * d1 * d0;
+        y[1] += s2 * d0;
         y[0] += s3 * d0;
     
-        x[0] = y[0];
-        x[1] = y[1];
+        x[0] = fmod(y[0], 2 * M_PI);
+        x[1] = fmod(y[1], 2 * M_PI);
     }
 };
 

@@ -12,7 +12,7 @@ nIter = 1024
 for i in range(6):
     p = subprocess.Popen(binary, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.stdin.write(array([i, random.randint(1<<30)], uint32).tobytes())
-    p.stdin.write(array([0.2, 0.0, 0.0, 0.0], float32).tobytes())
+    p.stdin.write(array([0.2, 0, 0, 1.0], float32).tobytes())
     p.stdin.write(array(nIter, uint32).tobytes())
     p.stdin.flush()
     procs.append(p)
@@ -23,6 +23,9 @@ density = sum(out, 0).reshape([n, n])
 
 print(density.sum())
 print(density.max())
+
+#from pylab import *
+#hist(density[425,:], 100)
 
 myname = subprocess.check_output('hostname').decode().strip()
 fname = 'density_{}_{}_{}_{}.npy'.format(os.path.basename(binary), myname, nIter, random.rand())

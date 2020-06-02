@@ -3,7 +3,7 @@ import json
 import subprocess
 
 myPath = os.path.dirname(os.path.abspath(__file__))
-cmd = 'python3 {}/cat.py'.format(myPath)
+cmd = 'python3 {}/simulate.py'.format(myPath)
 config = json.load(open(os.path.join(myPath, 'config.json')))
 nodes = config['nodes']
 
