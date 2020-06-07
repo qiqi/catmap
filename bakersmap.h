@@ -13,7 +13,7 @@ struct BakersMap {
     
         y[1] += s0 * d1;
         y[0] += s1 * d1 * d0;
-        y[1] += s2 * d0;
+        y[1] += s2 * d1 * d0;
         y[0] += s3 * d0;
     
         x[0] = fmod(y[0], 2 * M_PI);
