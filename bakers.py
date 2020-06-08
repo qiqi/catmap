@@ -4,8 +4,8 @@ import subprocess
 from numpy import *
 
 myPath = os.path.dirname(os.path.abspath(__file__))
-config = json.load(open(os.path.join(myPath, 'config.json')))
-binary = config['binary']
+config = json.load(open(os.path.join(myPath, 'bakers.json')))
+binary = config['bakers_binary']
 
 procs = []
 nIter = 1024
