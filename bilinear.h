@@ -21,10 +21,14 @@ void pIncrement(
         double fracx = fmod(xy[0], dx);
         double fracy = fmod(xy[1], dy);
 
-        atomicAdd(tmpCounts + ind00, -float(1 - fracy));
-        atomicAdd(tmpCounts + ind10, +float(1 - fracy));
-        atomicAdd(tmpCounts + ind01, -float(fracy));
-        atomicAdd(tmpCounts + ind11, +float(fracy));
+        atomicAdd(tmpCounts + ind00, -float(1 - fracy) * xy[2]
+                                     -float(1 - fracx) * xy[3]);
+        atomicAdd(tmpCounts + ind10, +float(1 - fracy) * xy[2]
+                                     -float(fracx)     * xy[3]);
+        atomicAdd(tmpCounts + ind01, -float(fracy)     * xy[2]
+                                     +float(1 - fracx) * xy[3]);
+        atomicAdd(tmpCounts + ind11, +float(fracy)     * xy[2]
+                                     +float(fracx)     * xy[3]);
     }
 }
 

@@ -35,9 +35,6 @@ struct BakersMapWithV1 {
         y[1] += s2 * d1 * d0;
         y[0] += s3 * d0;
     
-        x[0] = fmod(y[0], 2 * M_PI);
-        x[1] = fmod(y[1], 2 * M_PI);
-
         double z[2] = {2 * x[2], x[3] / 2.};
         double e0 = cos(2 * x[0]) * x[2];
         double e1 = cos(x[1]) * x[3];
@@ -48,6 +45,10 @@ struct BakersMapWithV1 {
         z[0] += s3 * e0;
 
         double zmag = sqrt(z[0] * z[0] + z[1] * z[1]);
+
+        x[0] = fmod(y[0], 2 * M_PI);
+        x[1] = fmod(y[1], 2 * M_PI);
+
         x[2] = z[0] / zmag;
         x[3] = z[1] / zmag;
     }
